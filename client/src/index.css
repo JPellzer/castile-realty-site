@@ -1,0 +1,238 @@
+/* ============================================================
+   CASTILE REALTY REALTY GROUP — Design System
+   Brand: Deep Navy (#0D1B3E) + Gold (#C9A84C) + White
+   Typography: Playfair Display (serif headings) + Inter (body)
+   Philosophy: Premium, trustworthy, aspirational real estate
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme inline {
+  --color-border: oklch(0.90 0.005 255);
+  --color-ring: oklch(0.72 0.12 75);
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.15 0.02 255);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.15 0.02 255);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.15 0.02 255);
+  --color-primary: oklch(0.18 0.07 255);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-secondary: oklch(0.96 0.04 75);
+  --color-secondary-foreground: oklch(0.18 0.07 255);
+  --color-muted: oklch(0.97 0.005 255);
+  --color-muted-foreground: oklch(0.50 0.02 255);
+  --color-accent: oklch(0.72 0.12 75);
+  --color-accent-foreground: oklch(0.18 0.07 255);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.985 0 0);
+  --color-input: oklch(0.90 0.005 255);
+  --color-sidebar: oklch(0.18 0.07 255);
+  --color-sidebar-foreground: oklch(1 0 0);
+  --color-sidebar-primary: oklch(0.72 0.12 75);
+  --color-sidebar-primary-foreground: oklch(0.18 0.07 255);
+  --color-sidebar-accent: oklch(0.22 0.07 255);
+  --color-sidebar-accent-foreground: oklch(1 0 0);
+  --color-sidebar-border: oklch(0.28 0.07 255);
+  --color-sidebar-ring: oklch(0.72 0.12 75);
+  --color-navy-950: oklch(0.13 0.06 255);
+  --color-navy-900: oklch(0.18 0.07 255);
+  --color-navy-800: oklch(0.22 0.07 255);
+  --color-navy-700: oklch(0.28 0.07 255);
+  --color-navy-600: oklch(0.35 0.07 255);
+  --color-gold-500: oklch(0.72 0.12 75);
+  --color-gold-400: oklch(0.78 0.11 75);
+  --color-gold-300: oklch(0.84 0.09 75);
+  --color-gold-200: oklch(0.90 0.07 75);
+  --color-gold-100: oklch(0.96 0.04 75);
+  --color-cream: oklch(0.98 0.01 75);
+
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.02 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 255);
+  --primary: oklch(0.18 0.07 255);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.04 75);
+  --secondary-foreground: oklch(0.18 0.07 255);
+  --muted: oklch(0.97 0.005 255);
+  --muted-foreground: oklch(0.50 0.02 255);
+  --accent: oklch(0.72 0.12 75);
+  --accent-foreground: oklch(0.18 0.07 255);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.90 0.005 255);
+  --input: oklch(0.90 0.005 255);
+  --ring: oklch(0.72 0.12 75);
+  --sidebar: oklch(0.18 0.07 255);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.72 0.12 75);
+  --sidebar-primary-foreground: oklch(0.18 0.07 255);
+  --sidebar-accent: oklch(0.22 0.07 255);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.28 0.07 255);
+  --sidebar-ring: oklch(0.72 0.12 75);
+  --chart-1: oklch(0.72 0.12 75);
+  --chart-2: oklch(0.18 0.07 255);
+  --chart-3: oklch(0.84 0.09 75);
+  --chart-4: oklch(0.28 0.07 255);
+  --chart-5: oklch(0.96 0.04 75);
+}
+
+@layer base {
+  * {
+    border-color: oklch(0.90 0.005 255);
+    outline-color: oklch(0.72 0.12 75 / 0.5);
+  }
+  body {
+    background-color: oklch(1 0 0);
+    color: oklch(0.15 0.02 255);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* Castile Brand Utilities */
+  .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-sans {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .text-navy {
+    color: oklch(0.18 0.07 255);
+  }
+  .text-gold {
+    color: oklch(0.72 0.12 75);
+  }
+  .bg-navy {
+    background-color: oklch(0.18 0.07 255);
+  }
+  .bg-navy-dark {
+    background-color: oklch(0.13 0.06 255);
+  }
+  .bg-gold {
+    background-color: oklch(0.72 0.12 75);
+  }
+  .border-gold {
+    border-color: oklch(0.72 0.12 75);
+  }
+  .gold-divider {
+    width: 3rem;
+    height: 2px;
+    background: oklch(0.72 0.12 75);
+    margin: 1rem 0;
+  }
+  .btn-gold {
+    background-color: oklch(0.72 0.12 75);
+    color: oklch(0.18 0.07 255);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 0.75rem 2rem;
+    border: none;
+    transition: all 0.2s ease;
+  }
+  .btn-gold:hover {
+    background-color: oklch(0.78 0.11 75);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px oklch(0.72 0.12 75 / 0.3);
+  }
+  .btn-navy {
+    background-color: oklch(0.18 0.07 255);
+    color: white;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 0.75rem 2rem;
+    border: none;
+    transition: all 0.2s ease;
+  }
+  .btn-navy:hover {
+    background-color: oklch(0.22 0.07 255);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px oklch(0.18 0.07 255 / 0.3);
+  }
+  .btn-outline-gold {
+    background-color: transparent;
+    color: oklch(0.72 0.12 75);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 0.7rem 1.9rem;
+    border: 2px solid oklch(0.72 0.12 75);
+    transition: all 0.2s ease;
+  }
+  .btn-outline-gold:hover {
+    background-color: oklch(0.72 0.12 75);
+    color: oklch(0.18 0.07 255);
+  }
+  .section-label {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.12 75);
+  }
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px oklch(0.18 0.07 255 / 0.12);
+  }
+}
