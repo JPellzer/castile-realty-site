@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { MapView } from "../components/Map";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
@@ -167,6 +168,25 @@ export default function Contact() {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── MAP SECTION ── */}
+      <section className="py-0">
+        <div className="w-full">
+          <MapView
+            className="w-full h-[500px]"
+            initialCenter={{ lat: 43.6165, lng: -116.3515 }}
+            initialZoom={15}
+            onMapReady={(map) => {
+              // Add marker for office location
+              new window.google.maps.marker.AdvancedMarkerElement({
+                map,
+                position: { lat: 43.6165, lng: -116.3515 },
+                title: "Sweet Group Realty - Castile Realty Group",
+              });
+            }}
+          />
         </div>
       </section>
 
