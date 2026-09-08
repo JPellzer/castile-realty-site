@@ -85,17 +85,8 @@ function DropdownItem({ label, href, desc, onClick }: { label: string; href: str
 }
 
 // ── Nav Item with optional dropdown ───────────────────────
-function NavItem({ item, isActive }: { item: typeof NAV_ITEMS[0]; isActive: boolean }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+function NavItem({ item, isActive, openDropdown, setOpenDropdown }: { item: typeof NAV_ITEMS[0]; isActive: boolean; openDropdown: string | null; setOpenDropdown: (label: string | null) => void }) {
+  const open = openDropdown === item.label;
 
   if (!item.dropdown) {
     return (
@@ -118,10 +109,10 @@ function NavItem({ item, isActive }: { item: typeof NAV_ITEMS[0]; isActive: bool
   }
 
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div style={{ position: "relative" }}>
       <button
-        onClick={() => setOpen(!open)}
-        onMouseEnter={() => setOpen(true)}
+        onClick={() => setOpenDropdown(open ? null : item.label)}
+        onMouseEnter={() => setOpenDropdown(item.label)}
         style={{
           background: "none",
           border: "none",
@@ -147,7 +138,6 @@ function NavItem({ item, isActive }: { item: typeof NAV_ITEMS[0]; isActive: bool
 
       {open && (
         <div
-          onMouseLeave={() => setOpen(false)}
           style={{
             position: "absolute",
             top: "calc(100% + 16px)",
@@ -175,7 +165,7 @@ function NavItem({ item, isActive }: { item: typeof NAV_ITEMS[0]; isActive: bool
             borderBottom: `6px solid rgba(212,175,55,0.25)`,
           }} />
           {item.dropdown.map((d) => (
-            <DropdownItem key={d.href + d.label} label={d.label} href={d.href} desc={d.desc} onClick={() => setOpen(false)} />
+            <DropdownItem key={d.href + d.label} label={d.label} href={d.href} desc={d.desc} onClick={() => setOpenDropdown(null)} />
           ))}
         </div>
       )}
@@ -190,6 +180,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1100);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -202,6 +194,23 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenDropdown(null);
+    };
+    const onClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onClickOutside);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <style>{`
@@ -211,7 +220,7 @@ export default function Navbar() {
         }
       `}</style>
 
-      <header style={{
+      <header ref={headerRef} onMouseLeave={() => setOpenDropdown(null)} style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
         background: NAVY,
         borderBottom: "1px solid rgba(212,175,55,0.3)",
@@ -257,7 +266,7 @@ export default function Navbar() {
           {!isMobile && (
             <nav style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "28px" }}>
               {NAV_ITEMS.map((item) => (
-                <NavItem key={item.href} item={item} isActive={location === item.href || location.startsWith(item.href + "/")} />
+                <NavItem key={item.href} item={item} isActive={location === item.href || location.startsWith(item.href + "/")} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
               ))}
             </nav>
           )}
