@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { submitContactForm } from "../lib/contactApi";
 
 // ── ARTICLE DATA ──────────────────────────────────────────────
 const ARTICLES = [
@@ -457,6 +458,26 @@ function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+    const result = await submitContactForm({
+      formType: "newsletter",
+      email: formData.get("email") as string,
+      name: formData.get("name") as string,
+      website: formData.get("website") as string,
+    });
+
+    if (result.success) {
+      setSubmitted(true);
+    } else {
+      setError(result.error || "Failed to subscribe. Please try again.");
+    }
+  };
 
   if (submitted) {
     return (
@@ -474,11 +495,13 @@ function NewsletterForm() {
 
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+      onSubmit={handleSubmit}
       className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
     >
+      <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
       <input
         type="text"
+        name="name"
         required
         placeholder="Your name"
         value={name}
@@ -487,6 +510,7 @@ function NewsletterForm() {
       />
       <input
         type="email"
+        name="email"
         required
         placeholder="Your email address"
         value={email}
@@ -496,6 +520,9 @@ function NewsletterForm() {
       <button type="submit" className="btn-gold rounded-none px-8 py-4 text-xs tracking-widest whitespace-nowrap">
         SUBSCRIBE
       </button>
+      {error && (
+        <p className="text-red-400 text-sm font-sans col-span-full">{error}</p>
+      )}
     </form>
   );
 }

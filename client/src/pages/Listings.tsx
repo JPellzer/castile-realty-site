@@ -17,6 +17,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MortgageCalculator from "../components/MortgageCalculator";
+import { submitContactForm } from "../lib/contactApi";
 
 const COUNTIES = ["All Counties", "Ada County", "Canyon County", "Gem County", "Owyhee County", "Elmore County"];
 const PRICE_RANGES = ["Any Price", "Under $300K", "$300K – $400K", "$400K – $500K", "$500K – $700K", "$700K – $1M", "$1M+"];
@@ -31,10 +32,30 @@ export default function Listings() {
   const [alertEmail, setAlertEmail] = useState("");
   const [alertName, setAlertName] = useState("");
   const [alertSubmitted, setAlertSubmitted] = useState(false);
+  const [alertError, setAlertError] = useState("");
 
-  function handleAlertSubmit(e: React.FormEvent) {
+  async function handleAlertSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAlertSubmitted(true);
+    setAlertError("");
+
+    const formData = new FormData(e.currentTarget);
+    const result = await submitContactForm({
+      formType: "listing_alert",
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      location: formData.get("location") as string,
+      priceRange: formData.get("priceRange") as string,
+      beds: formData.get("beds") as string,
+      frequency: formData.get("freq") as string,
+      website: formData.get("website") as string,
+    });
+
+    if (result.success) {
+      setAlertSubmitted(true);
+    } else {
+      setAlertError(result.error || "Failed to set up alerts. Please try again.");
+    }
   }
 
   return (
@@ -219,8 +240,10 @@ export default function Listings() {
                   <h3 className="font-serif text-2xl font-bold text-[oklch(0.18_0.07_255)] mb-2">Set Up Your Listing Alert</h3>
                   <p className="text-gray-500 font-sans text-sm mb-6">Free. No spam. Unsubscribe anytime.</p>
                   <form onSubmit={handleAlertSubmit} className="space-y-4">
+                    <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
                     <input
                       type="text"
+                      name="name"
                       required
                       placeholder="Your full name"
                       value={alertName}
@@ -229,6 +252,7 @@ export default function Listings() {
                     />
                     <input
                       type="email"
+                      name="email"
                       required
                       placeholder="Email address"
                       value={alertEmail}
@@ -237,18 +261,19 @@ export default function Listings() {
                     />
                     <input
                       type="tel"
+                      name="phone"
                       placeholder="Phone number (optional)"
                       className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-700"
                     />
-                    <select className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
+                    <select name="location" className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
                       <option value="">Preferred county</option>
                       {COUNTIES.slice(1).map((c) => <option key={c}>{c}</option>)}
                     </select>
-                    <select className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
+                    <select name="priceRange" className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
                       <option value="">Price range</option>
                       {PRICE_RANGES.slice(1).map((p) => <option key={p}>{p}</option>)}
                     </select>
-                    <select className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
+                    <select name="beds" className="w-full border border-gray-200 px-5 py-3.5 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)] text-gray-500">
                       <option value="">Minimum bedrooms</option>
                       {BEDS.slice(1).map((b) => <option key={b}>{b}</option>)}
                     </select>
@@ -262,6 +287,9 @@ export default function Listings() {
                         <span className="text-sm font-sans text-gray-600">Daily digest</span>
                       </label>
                     </div>
+                    {alertError && (
+                      <p className="text-red-600 text-sm font-sans">{alertError}</p>
+                    )}
                     <button type="submit" className="btn-gold w-full rounded-none py-4 text-sm tracking-widest">
                       ACTIVATE MY LISTING ALERTS
                     </button>

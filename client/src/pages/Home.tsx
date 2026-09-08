@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { submitContactForm } from "../lib/contactApi";
 
 // ── URL parameter maps for Sweet Group Realty IDX portal ──
 const CITY_PARAMS: Record<string, string> = {
@@ -408,10 +409,18 @@ export default function Home() {
           </p>
           <form
             className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const form = e.target as HTMLFormElement;
-              // Trigger PDF download immediately
+              const formData = new FormData(form);
+
+              await submitContactForm({
+                formType: "relocation_guide",
+                email: formData.get("email") as string,
+                name: formData.get("name") as string,
+                website: formData.get("website") as string,
+              });
+
               const link = document.createElement('a');
               link.href = '/manus-storage/relocation-guide_a5dc95b9.pdf';
               link.download = '2026-California-to-Idaho-Relocation-Guide-Castile-Realty-Group.pdf';
@@ -421,6 +430,14 @@ export default function Home() {
               form.reset();
             }}
           >
+            <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
+            <input
+              type="text"
+              name="name"
+              required
+              placeholder="Your name"
+              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/40 font-sans text-sm focus:outline-none focus:border-[oklch(0.72_0.12_75)]"
+            />
             <input
               type="email"
               name="email"

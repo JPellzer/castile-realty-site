@@ -5,6 +5,7 @@
 import { Link } from "wouter";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { submitContactForm } from "../lib/contactApi";
 
 const CALI_IMG = "/manus-storage/california-to-idaho_09f791fe.jpg";
 
@@ -215,15 +216,30 @@ export default function Relocation() {
           </p>
           <form
             className="space-y-4 max-w-md mx-auto"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const form = e.target as HTMLFormElement;
-              const name = (form.elements.namedItem("name") as HTMLInputElement).value;
-              const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-              alert(`Thank you, ${name}! We will send the Relocation Guide to ${email} shortly.`);
+              const formData = new FormData(form);
+
+              await submitContactForm({
+                formType: "relocation_guide",
+                name: formData.get("name") as string,
+                email: formData.get("email") as string,
+                phone: formData.get("phone") as string,
+                timeline: formData.get("timeline") as string,
+                website: formData.get("website") as string,
+              });
+
+              const link = document.createElement('a');
+              link.href = '/manus-storage/relocation-guide_a5dc95b9.pdf';
+              link.download = '2026-California-to-Idaho-Relocation-Guide-Castile-Realty-Group.pdf';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
               form.reset();
             }}
           >
+            <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
             <input
               type="text"
               name="name"

@@ -4,13 +4,35 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { submitContactForm } from "../lib/contactApi";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      formType: "contact" as const,
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      interest: formData.get("interest") as string,
+      budget: formData.get("budget") as string,
+      timeline: formData.get("timeline") as string,
+      message: formData.get("message") as string,
+      website: formData.get("website") as string,
+    };
+
+    const result = await submitContactForm(data);
+    if (result.success) {
+      setSubmitted(true);
+    } else {
+      setError(result.error || "Failed to send message. Please try again.");
+    }
   };
 
   return (
@@ -111,23 +133,24 @@ export default function Contact() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  <input type="text" name="website" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Full Name *</label>
-                    <input type="text" required className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="Your full name" />
+                    <input type="text" name="name" required className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="Your full name" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Email *</label>
-                      <input type="email" required className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="your@email.com" />
+                      <input type="email" name="email" required className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="your@email.com" />
                     </div>
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Phone</label>
-                      <input type="tel" className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="(555) 000-0000" />
+                      <input type="tel" name="phone" className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)]" placeholder="(555) 000-0000" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">I Am Interested In</label>
-                    <select className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
+                    <select name="interest" className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
                       <option>Buying a Home in Idaho</option>
                       <option>Selling My Idaho Home</option>
                       <option>Relocating from California</option>
@@ -137,7 +160,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Budget / Price Range</label>
-                    <select className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
+                    <select name="budget" className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
                       <option>Under $350,000</option>
                       <option>$350,000 – $500,000</option>
                       <option>$500,000 – $700,000</option>
@@ -147,7 +170,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Timeline</label>
-                    <select className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
+                    <select name="timeline" className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-500 focus:outline-none focus:border-[oklch(0.72_0.12_75)]">
                       <option>Ready Now</option>
                       <option>Within 3 Months</option>
                       <option>3–6 Months</option>
@@ -157,8 +180,11 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-sans mb-2">Message</label>
-                    <textarea rows={4} className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)] resize-none" placeholder="Tell us about what you're looking for..." />
+                    <textarea name="message" rows={4} className="w-full border border-gray-200 px-5 py-4 font-sans text-sm text-gray-700 focus:outline-none focus:border-[oklch(0.72_0.12_75)] resize-none" placeholder="Tell us about what you're looking for..." />
                   </div>
+                  {error && (
+                    <p className="text-red-600 text-sm font-sans">{error}</p>
+                  )}
                   <button type="submit" className="btn-gold w-full rounded-none py-4 text-sm tracking-widest">
                     Send Message
                   </button>
